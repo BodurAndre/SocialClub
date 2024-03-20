@@ -3,9 +3,12 @@ package org.example.server.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.server.models.Friends;
 import org.example.server.models.User;
 
+import org.example.server.repositories.FriendRepository;
 import org.example.server.repositories.UserRepository;
+import org.example.server.service.FriendService;
 import org.example.server.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,7 +30,6 @@ public class HomeController {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    private String mode = "false";
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String home(){
         return "Home/home";
@@ -40,43 +42,18 @@ public class HomeController {
 
     @RequestMapping("/MyProfile")
     public String MyProfile(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = authentication.getName();
+        String userName = AuthenticationUser();
         User user = userRepository.findUserByEmail(userName);
         model.addAttribute("user", user);
-        if(user.getProfilePhotoUrl() != null)  mode = "true";
-        model.addAttribute("mode", mode);
         return "Users/MyProfile";
     }
 
     @RequestMapping("/settings")
     public String Settings(Model model){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = authentication.getName();
+        String userName = AuthenticationUser();
         User user = userRepository.findUserByEmail(userName);
         model.addAttribute("user", user);
-        if(user.getProfilePhotoUrl() != null)  mode = "true";
-        model.addAttribute("mode", mode);
         return "Home/Settings";
-    }
-
-    @PostMapping("/editAccount")
-    public String AccountEdit(@RequestParam(name = "firstName") String firstName,
-                              @RequestParam(name = "lastName") String lastName,
-                              @RequestParam(name = "email") String email,
-                              @RequestParam(name = "gender") String gender,
-                              @RequestParam(name = "profile") String profile
-                              ){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = authentication.getName();
-        User user = userRepository.findUserByEmail(userName);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setGender(gender);
-        user.setProfile(profile);
-        userRepository.save(user);
-        return "redirect:/settings";
     }
 
     @RequestMapping(value = "/Notification", method = RequestMethod.GET)
@@ -102,19 +79,17 @@ public class HomeController {
         }
 
         try {
-            String uploadDir = "/home/andrei/Documents/Projekt/Work/SocialClub/target/classes/static/img/Screen";
+            String userName = AuthenticationUser();
+            String uploadDir = "/home/andrei/Documents/Projekt/Work/SocialClub/target/classes/static/img/" + userName;
             Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String fileName = file.getOriginalFilename();
             Path filePath = uploadPath.resolve(fileName);
-            String userName = authentication.getName();
             User user = userRepository.findUserByEmail(userName);
-
+            user.setProfilePhotoUrl("true");
             if (Files.exists(filePath)) {
                 user.setFileName(fileName);
                 userRepository.save(user);
@@ -122,7 +97,6 @@ public class HomeController {
             }
 
             Files.copy(file.getInputStream(), filePath);
-            user.setProfilePhotoUrl(filePath.toString());
             user.setFileName(fileName);
             userRepository.save(user);
             return "redirect:/settings";
@@ -132,10 +106,8 @@ public class HomeController {
         }
     }
 
-    @GetMapping("/account/{id}")
-    public String supportDelete(@PathVariable Long id, Model model){
-        User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        return "Users/user-info";
+    private String AuthenticationUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }

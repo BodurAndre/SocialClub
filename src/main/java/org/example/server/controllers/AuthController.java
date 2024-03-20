@@ -1,6 +1,6 @@
 package org.example.server.controllers;
 
-import jakarta.servlet.http.HttpServletResponse;
+
 import org.example.server.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("")
 public class AuthController {
     private final UserService userService;
+
+
     private final AuthenticationManager authenticationManager;
 
     public AuthController(UserService userService, AuthenticationManager authenticationManager) {
@@ -29,32 +31,38 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/register",method = RequestMethod.GET)
-    public String register(HttpServletRequest request, HttpServletResponse response, Model model){
+    public String register(Model model){
         User user = new User();
         model.addAttribute("user",user);
         return "register";
     }
 
-    @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public String createNewUser(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("user")User user){
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String createNewUser(HttpServletRequest request, @ModelAttribute("user") User user) {
         try {
             user.setRole("USER");
-            User newUser = userService.createUser(user);
-            if(newUser == null){
-                return "redirect:/register?error";
+            user.setProfile("Public");
+            user.setProfilePhotoUrl("false");
+            user.setFileName("standart_profile.png");
+            if (userService.findUser(user.getEmail())) {
+                return "redirect:/register?error=email_exists";
             }
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
+            User newUser = userService.createUser(user);
+            if (newUser == null) {
+                return "redirect:/register?error=email_exists&email=" + user.getEmail();
+            }
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             SecurityContext securityContext = SecurityContextHolder.getContext();
             securityContext.setAuthentication(authentication);
             HttpSession session = request.getSession(true);
-            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,securityContext);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
             return "redirect:/";
 
-        } catch (Exception e){
-            return "redirect:/register?error";
+        } catch (Exception e) {
+            return "redirect:/register?error=";
         }
-
     }
+
 
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String login(){
@@ -69,6 +77,5 @@ public class AuthController {
         securityContext.setAuthentication(null);
         return "redirect:/login";
     }
-
 
 }

@@ -12,14 +12,9 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,Long> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     User findUserByEmail(@Param("email") String email);
-
     @Query("SELECT u FROM User u WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :firstname, '%'))")
     List<User> findUsersByPartialName(@Param("firstname") String firstname);
-
-
     @Query("SELECT u FROM User u WHERE LOWER(u.lastName) LIKE LOWER(CONCAT('%', :lastname, '%'))")
     List<User> findUsersByPartialLast(@Param("lastname") String lastname);
-
-
-
 }
+

@@ -35,15 +35,32 @@
     <div class="news-feed">
         <div class="profile-info">
             <div class="profile-image">
-                <img src="/img/Screen/${user.fileName}" alt="">
+                <#if user.profilePhotoUrl == "true">
+                    <img src="/img/${user.email}/${user.fileName}" alt="">
+                <#else>
+                    <img src="/img/standart_profile.png" alt="">
+                </#if>
             </div>
             <div class="profile-details">
                 <div class="text_item">${user.firstName}  ${user.lastName}</div>
-                <div class="text">email: ${user.email}</div>
-                <div class="text">Страна: ${user.country}<br></div>
-                <div class="text">Пол: ${user.gender}<br></div>
-                <div class="text">Дата рождения: ${user.dateOfBirth}<br></div>
-                <div class="text">Профиль: ${user.profile}<br></div>
+                <#if user.profile != "Private">
+                    <div class="text">email: ${user.email}</div>
+                    <div class="text">Страна: ${user.country}<br></div>
+                    <div class="text">Пол: ${user.gender}<br></div>
+                    <div class="text">Дата рождения: ${user.dateOfBirth}<br></div>
+                <#else>
+                    <div class="text">Профиль закрытый</div>
+                </#if>
+
+                <#if friend??>
+                    <#if friend.status == "active">
+                        <div class="text"><a href="/friendDelete/${user.id}">Удалить из друзей</a> </div>
+                    <#else>
+                        <div class="text">Заявка в друзья отправлена</div>
+                    </#if>
+                <#else>
+                    <div class="text"><a href="/friendNotification/${user.id}">Добавить в друзья</a> </div>
+                </#if>
             </div>
         </div>
     </div>

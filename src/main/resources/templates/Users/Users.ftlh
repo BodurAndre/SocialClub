@@ -36,20 +36,22 @@
             <#list users as user>
                 <a class="profile-info" href="/account/${user.id}">
                     <div class="profile-image">
-                        <#if user.profilePhotoUrl??>
-                            <img src="/img/Screen/${user.fileName}" alt="">
+                        <#if user.profilePhotoUrl == "true">
+                            <img src="/img/${user.email}/${user.fileName}" alt="">
                         <#else>
                             <img src="/img/standart_profile.png" alt="">
                         </#if>
                     </div>
                     <div class="profile-details">
                         <div class="text_item">${user.firstName}  ${user.lastName}</div>
-                        <div class="text">email: ${user.email}</div>
-                        <div class="text">Страна: ${user.country}<br></div>
-                        <div class="text">Пол: ${user.gender}<br></div>
-                        <div class="text">Дата рождения: ${user.dateOfBirth}<br></div>
-                        <div class="text">Профиль: ${user.profile}<br></div>
-
+                        <#if user.profile != "Private">
+                            <div class="text">email: ${user.email}</div>
+                            <div class="text">Страна: ${user.country}<br></div>
+                            <div class="text">Пол: ${user.gender}<br></div>
+                            <div class="text">Дата рождения: ${user.dateOfBirth}<br></div>
+                        <#else>
+                            <div class="text">Профиль закрытый</div>
+                        </#if>
                     </div>
                 </a>
             </#list>

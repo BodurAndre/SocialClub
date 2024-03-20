@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -31,7 +31,7 @@ public class User {
     @Column(name = "LAST_NAME")
     private String lastName;
 
-    @Column(name = "PROFILE_PHOTO_URL")
+    @Column(name = "PROFILE_PHOTO_url")
     private String profilePhotoUrl;
 
     @Column(name = "COUNTRY")
@@ -39,7 +39,7 @@ public class User {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "DATE_OF_BIRTH")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "GENDER")
     private String gender;
@@ -52,7 +52,7 @@ public class User {
 
     @Column(name = "PROFILE")
     private String profile;
-    public User(String email, String password, String firstName, String lastName, Date dateOfBirth, String country, String gender, String filename) {
+    public User(String email, String password, String firstName, String lastName, LocalDate dateOfBirth, String country, String gender, String filename) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;

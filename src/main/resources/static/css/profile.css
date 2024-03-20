@@ -43,6 +43,15 @@
     margin-bottom: 30px;
 }
 
+.text a:hover{
+    text-decoration: underline;
+}
+
+.text a{
+    color: black;
+}
+
+
 .dropdown {
     width: 100%; /* Подстройте ширину по необходимости */
     padding: 10px;

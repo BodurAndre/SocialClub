@@ -34,8 +34,8 @@
     <div class="news-feed">
         <div class="profile-info">
             <div class="profile-image">
-                <#if mode="true">
-                    <img src="/img/Screen/${user.fileName}" alt="">
+                <#if user.profilePhotoUrl == "true">
+                    <img src="/img/${user.email}/${user.fileName}" alt="">
                 <#else>
                     <img src="/img/standart_profile.png" alt="">
                 </#if>
@@ -49,20 +49,31 @@
                 <form action="/editAccount" method="post">
                     <div class="text">Имя: <input type="text" name="firstName" value="${user.firstName}"/></div>
                     <div class="text">Фамилия: <input type="text" name="lastName" value="${user.lastName}"/></div>
-                    <div class="text">email: <input type="text" name="email" value="${user.email}"/></div>
+                    <div class="text">Email: <input type="text" name="email" value="${user.email}"/></div>
                     <div class="text">Пол:
-                        <select id="gender" name="gender" th:value="${user.gender}" class="dropdown">
-                            <option value="Male">Мужской</option>
-                            <option value="Female">Женский</option>
-                        </select></div>
+                        <select id="gender" name="gender" class="dropdown">
+                            <#if user.gender == "Мужской">
+                                <option value="Male" selected>Мужской</option>
+                                <option value="Female">Женский</option>
+                            <#else>
+                                <option value="Male">Мужской</option>
+                                <option value="Female" selected>Женский</option>
+                            </#if>
+                        </select>
+                    </div>
                     <div class="text">Профиль:
-                        <select id="gender" name="profile" th:value="${user.profile}" class="dropdown">
-                            <option value="Public">Public</option>
-                            <option value="Private">Private</option>
+                        <select id="profile" name="profile" class="dropdown">
+                            <#if user.profile == "Public">
+                                <option value="Public" selected>Public</option>
+                                <option value="Private">Private</option>
+                            <#else>
+                                <option value="Public">Public</option>
+                                <option value="Private" selected>Private</option>
+                            </#if>
                         </select>
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                    <br><br><input type="submit" value="Сохранить изменени"><br><br>
+                    <br><br><input type="submit" value="Сохранить изменения"><br><br>
                 </form>
             </div>
         </div>
