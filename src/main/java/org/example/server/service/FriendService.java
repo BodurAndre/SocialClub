@@ -29,7 +29,7 @@ public class FriendService {
     }
 
     public boolean friendshipExists(Long userId, Long friendId) {
-        return friendRepository.existsByUserIdAndFriendId(userId, friendId);
+        return friendRepository.existsByUserIdAndFriendIdOrFriendIdAndUserId(userId, friendId);
     }
 
 }

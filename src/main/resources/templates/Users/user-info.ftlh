@@ -51,16 +51,20 @@
                 <#else>
                     <div class="text">Профиль закрытый</div>
                 </#if>
-
-                <#if friend??>
-                    <#if friend.status == "active">
-                        <div class="text"><a href="/friendDelete/${user.id}">Удалить из друзей</a> </div>
-                    <#else>
-                        <div class="text">Заявка в друзья отправлена</div>
-                    </#if>
+                <#if friend>
+                    <div class="text"><a href="/friendDelete/${user.id}">Удалить из друзей</a> </div>
                 <#else>
-                    <div class="text"><a href="/friendNotification/${user.id}">Добавить в друзья</a> </div>
+                    <#if notification??>
+                        <#if notification.status == "active">
+
+                        <#else>
+                            <div class="text">Заявка в друзья отправлена</div>
+                        </#if>
+                    <#else>
+                        <div class="text"><a href="/friendNotification/${user.id}">Добавить в друзья</a> </div>
+                    </#if>
                 </#if>
+
             </div>
         </div>
     </div>

@@ -16,5 +16,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> findUsersByPartialName(@Param("firstname") String firstname);
     @Query("SELECT u FROM User u WHERE LOWER(u.lastName) LIKE LOWER(CONCAT('%', :lastname, '%'))")
     List<User> findUsersByPartialLast(@Param("lastname") String lastname);
+
+    @Query("SELECT u FROM User u WHERE u.id = :id")
+    List<User> findUsersById(@Param("id") Long id);
+
+    @Query("SELECT u FROM User u WHERE u.id = :id")
+    User findUserById(@Param("id") Long id);
 }
 

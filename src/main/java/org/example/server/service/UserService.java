@@ -52,8 +52,10 @@ public class UserService {
         return new ArrayList<>(users);
     }
 
-
-
+    public List<User> listUserById(Long id) {
+        List<User> usersById= userRepository.findUsersById(id);
+        return new ArrayList<>(usersById);
+    }
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
@@ -62,6 +64,7 @@ public class UserService {
     public User getUserByName(String name) {
         return userRepository.findUserByEmail(name);
     }
+
 
     public boolean findUser(String email) {
         User user = userRepository.findUserByEmail(email);

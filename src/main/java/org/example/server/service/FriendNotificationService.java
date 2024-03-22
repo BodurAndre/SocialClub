@@ -1,8 +1,13 @@
 package org.example.server.service;
 
 import org.example.server.models.FriendNotification;
+import org.example.server.models.Friends;
+import org.example.server.models.User;
 import org.example.server.repositories.FriendNotificationRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FriendNotificationService {
@@ -25,4 +30,10 @@ public class FriendNotificationService {
         friendNotificationRepository.deleteByUserIdAndFriendId(userId, friendId);
         friendNotificationRepository.flush();
     }
+
+    public List<Long> listNotificationById(Long id) {
+        List<Long> usersById = friendNotificationRepository.findFriendIdsByUserId(id);
+        return new ArrayList<>(usersById);
+    }
+
 }

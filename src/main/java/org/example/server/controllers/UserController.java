@@ -51,9 +51,12 @@ public class UserController {
         String userName = AuthenticationUser();
         User userLogin = userService.getUserByName(userName);
         User user = userService.getUserById(id);
-        FriendNotification friend =  friendNotificationService.friendshipExists(userLogin.getId(), id);
+        boolean friend = friendService.friendshipExists(userLogin.getId(),id);
+        FriendNotification notification =  friendNotificationService.friendshipExists(userLogin.getId(), id);
         model.addAttribute("user", user);
+        model.addAttribute("notification", notification);
         model.addAttribute("friend", friend);
+
         return "Users/user-info";
     }
 
@@ -65,6 +68,7 @@ public class UserController {
         friends.setUserId(user.getId());
         friends.setFriendId(id);
         friendService.createFriends(friends);
+        friendNotificationService.deleteFriends(user.getId(), id);
         return "redirect:/account/"+id;
     }
 
@@ -85,7 +89,6 @@ public class UserController {
         String userName = AuthenticationUser();
         User user = userService.getUserByName(userName);
         friendService.deleteFriends(user.getId(), id);
-        friendNotificationService.deleteFriends(user.getId(), id);;
         return "redirect:/account/"+id;
     }
 
